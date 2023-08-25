@@ -1,0 +1,79 @@
+identificador       ::= [a-zA-Z][a-zA-Z0-9\_]*
+
+endLine             ::= \;
+separador           ::= \#
+igual               ::= \=
+
+litInt              ::= (-?[1-9][0-9]*) | 0
+litFloat            ::= <numeroInt>\.[0-9][1-9]*
+litTrue             ::= "True"
+litFalse            ::= "False"
+litChar             ::= \'[^']\'
+litString           ::= \" (\" | [^"])+\"
+litBool             ::= <litTrue> | <litFalse>
+
+tipoInt             ::= "int"
+tipoFloat           ::= "float"
+tipoBool            ::= "bool"
+tipoChar            ::= "char"
+tipoString          ::= "string"
+
+signoResta          ::= \-
+signoSuma           ::= \+
+signoMulti          ::= \*
+signoDiv            ::= \/
+signoMod            ::= \%
+signoPot            ::= \^
+
+signoConjuncion     ::= \&
+signoConjuncion     ::= \|
+signoConjuncion     ::= \!
+
+sigAumen            ::= "++"
+sigDiminu           ::= "--"
+
+signoMenor          ::= "<"
+signoMenorIgual     ::= "<="
+signoMayor          ::= ">"
+signoMayorIgual     ::= ">="
+signoIgual          ::= "=="
+signoDiferente      ::= "!="
+
+signosOperadores    ::= <signoResta> | <signoSuma> | <signoMulti> | <signoDiv> | <signoMod> | <signoPot>
+operadoresUnarios   ::= <sigAumen> | <sigDiminu>
+
+valoresInt          ::= <litInt> | <identificador>
+operacionInt        ::= <valoresInt> (<signosOperadores> <valoresInt>)+
+varInt              ::= <identificador> <igual> <operacionInt> <endLine>
+creaVarInt          ::= <tipoInt> <separador> <identificador> <endLine>
+creaAsigVarInt      ::= <tipoInt> <separador> <identificador> <igual> <operacionInt> <endLine>
+variablesInt        ::= <varInt> | <creaVarInt> | <creaAsigVarInt>
+
+valoresFloat        ::= <litFloat> | <identificador>
+operacionFloat      ::= <valoresFloat> (<signosOperadores> <valoresFloat>)+
+varFloat            ::= <identificador> <igual> <operacionFloat> <endLine>
+creaVarFloat        ::= <tipoFloat> <separador> <identificador> <endLine>
+creaAsigVarFloat    ::= <tipoFloat> <separador> <identificador> <igual> <operacionFloat> <endLine>
+variablesFloat      ::= <varFloat> | <creaVarFloat> | <creaAsigVarFloat>
+
+valoresBool         ::= <litBool> | <identificador>
+varBool             ::= <identificador> <igual> <valoresBool> <endLine>
+creaVarBool         ::= <tipoBool> <separador> <identificador> <endLine>
+creaAsigVarBool     ::= <tipoBool> <separador> <identificador> <igual> <valoresBool> <endLine>
+variablesBool       ::= <varBool> | <creaVarBool> | <creaAsigVarBool>
+
+valoresChar         ::= <litChar> | <identificador>
+varChar             ::= <identificador> <igual> <valoresChar> <endLine>
+creaVarChar         ::= <tipoChar> <separador> <identificador> <endLine>
+creaAsigVarChar     ::= <tipoChar> <separador> <identificador> <igual> <valoresChar> <endLine>
+variablesChar       ::= <varChar> | <creaVarChar> | <creaAsigVarChar>
+
+valoresString       ::= <litString> | <identificador>
+varString           ::= <identificador> <igual> <valoresString> <endLine>
+creaVarString       ::= <tipoString> <separador> <identificador> <endLine>
+creaAsigVarString   ::= <tipoString> <separador> <identificador> <igual> <valoresString> <endLine>
+variablesString     ::= <varString | <creaVarString | <creaAsigVarString
+
+varOpUnarios        ::= <identificador> <operadoresUnarios> <endLine>
+
+variables           ::= <variablesInt> | <variablesFloat> | <variablesBool> | <variablesChar> | <variablesString> | <varOpUnarios>
