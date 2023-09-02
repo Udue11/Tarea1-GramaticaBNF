@@ -3,6 +3,8 @@ identificador       ::= [a-zA-Z][a-zA-Z0-9\_]*
 endLine             ::= \;
 separador           ::= \#
 igual               ::= \=
+dosPuntos           ::= \:
+coma                ::= \,
 
 litInt              ::= (-?[1-9][0-9]*) | 0
 litFloat            ::= <numeroInt>\.[0-9][1-9]*
@@ -24,13 +26,16 @@ signoMulti          ::= \*
 signoDiv            ::= \/
 signoMod            ::= \%
 signoPot            ::= \^
+operadoresAritme    ::= <signoResta> | <signoSuma> | <signoMulti> | <signoDiv> | <signoMod> | <signoPot>
 
 signoConjuncion     ::= \&
-signoConjuncion     ::= \|
-signoConjuncion     ::= \!
+signoDisyuncion     ::= \|
+signoNegacion       ::= \!
+operadoresLogicos   ::= <signoConjuncion> | <signoDisyuncion>
 
 sigAumen            ::= "++"
 sigDiminu           ::= "--"
+operadoresUnarios   ::= <sigAumen> | <sigDiminu>
 
 signoMenor          ::= "<"
 signoMenorIgual     ::= "<="
@@ -38,28 +43,58 @@ signoMayor          ::= ">"
 signoMayorIgual     ::= ">="
 signoIgual          ::= "=="
 signoDiferente      ::= "!="
+operadoresRela      ::= <signoMenor> | <signoMenorIgual> | <signoMayor> | <signoMayorIgual> | <signoIgual> | <signoDiferente>
 
-signosOperadores    ::= <signoResta> | <signoSuma> | <signoMulti> | <signoDiv> | <signoMod> | <signoPot>
-operadoresUnarios   ::= <sigAumen> | <sigDiminu>
+sigAbreParent       ::= \(
+sigCierraParent     ::= \)
+sigAbreLlaves       ::= \{
+sigCierraLlaves     ::= \}
 
-valoresInt          ::= <litInt> | <identificador>
-operacionInt        ::= <valoresInt> (<signosOperadores> <valoresInt>)+
+reservLeer          ::= "read"
+reservEscribir      ::= "write"
+
+reservIf            ::= "if"
+reservElse          ::= "else"
+reservSwitch        ::= "switch"
+reservWhile         ::= "while"
+reservForRange      ::= "forRange"
+reservMain          ::= "main"
+reservBreak         ::= "break"
+reservReturn        ::= "return"
+reservCase          ::= "case"
+reservDefault       ::= "default"
+
+comentarioSimple    ::= "//".*"\n"
+comentarioMultiple  ::= "/*" .*[\s.]* "*/"
+comentarios         ::= <comentarioSimple> | <comentarioMultiple>
+
+sentReturn          ::= <reservReturn> <endLine>
+sentBreak           ::= <reservBreak> <endLine>
+
+operaUnaria         ::= <identificador> <operadoresUnarios>
+operacionUnaria     ::= <operaUnaria> <endLine>
+
+valoresInt          ::= <litInt> | <identificador> | <llamarFunc>
+operacionInt        ::= <valoresInt>
+operacionInt        ::= <sigAbreParent> <valoresInt> <operadoresAritme> <valoresInt> <sigCierraParent> | <valoresInt> <operadoresAritme> <valoresInt>
+
 varInt              ::= <identificador> <igual> <operacionInt> <endLine>
 creaVarInt          ::= <tipoInt> <separador> <identificador> <endLine>
 creaAsigVarInt      ::= <tipoInt> <separador> <identificador> <igual> <operacionInt> <endLine>
 variablesInt        ::= <varInt> | <creaVarInt> | <creaAsigVarInt>
 
-valoresFloat        ::= <litFloat> | <identificador>
-operacionFloat      ::= <valoresFloat> (<signosOperadores> <valoresFloat>)+
+valoresFloat        ::= <litFloat> | <identificador> | <llamarFunc>
+operacionFloat      ::= <valoresFloat>
+operacionFloat      ::= <sigAbreParent> <valoresFloat> <operadoresAritme> <valoresFloat> <sigCierraParent> | <valoresFloat> <operadoresAritme> <valoresFloat>
 varFloat            ::= <identificador> <igual> <operacionFloat> <endLine>
 creaVarFloat        ::= <tipoFloat> <separador> <identificador> <endLine>
 creaAsigVarFloat    ::= <tipoFloat> <separador> <identificador> <igual> <operacionFloat> <endLine>
 variablesFloat      ::= <varFloat> | <creaVarFloat> | <creaAsigVarFloat>
 
-valoresBool         ::= <litBool> | <identificador>
+valoresBool         ::= <litBool> | <identificador> | <llamarFunc> | <operacionRelaInt> | <operacionRelaFloat> | <operacionLogicas>
 varBool             ::= <identificador> <igual> <valoresBool> <endLine>
 creaVarBool         ::= <tipoBool> <separador> <identificador> <endLine>
-creaAsigVarBool     ::= <tipoBool> <separador> <identificador> <igual> <valoresBool> <endLine>
+creaAsigVarBool     ::= <tipoBool> <separador> <identificador> <igual> (<signoNegacion>)? <valoresBool> <endLine>
 variablesBool       ::= <varBool> | <creaVarBool> | <creaAsigVarBool>
 
 valoresChar         ::= <litChar> | <identificador>
@@ -72,8 +107,73 @@ valoresString       ::= <litString> | <identificador>
 varString           ::= <identificador> <igual> <valoresString> <endLine>
 creaVarString       ::= <tipoString> <separador> <identificador> <endLine>
 creaAsigVarString   ::= <tipoString> <separador> <identificador> <igual> <valoresString> <endLine>
-variablesString     ::= <varString | <creaVarString | <creaAsigVarString
+variablesString     ::= <varString | <creaVarString> | <creaAsigVarString>
 
-varOpUnarios        ::= <identificador> <operadoresUnarios> <endLine>
+variables           ::= <variablesInt> | <variablesFloat> | <variablesBool> | <variablesChar> | <variablesString> | <operacionUnaria>
 
-variables           ::= <variablesInt> | <variablesFloat> | <variablesBool> | <variablesChar> | <variablesString> | <varOpUnarios>
+funcLeerInt         ::= <reservLeer> <sigAbreParent> <identificador> <sigCierraParent> <endLine>
+funcLeerFloat       ::= <reservLeer> <sigAbreParent> <identificador> <sigCierraParent> <endLine>
+funcLeer            ::= <funcLeerInt> | <funcLeerFloat>
+
+funcEscribirInt     ::= <reservEscribir> <sigAbreParent> <LitInt> <sigCierraParent> <endLine>
+funcEscribirFloat   ::= <reservEscribir> <sigAbreParent> <LitFloat> <sigCierraParent> <endLine>
+funcEscribirString  ::= <reservEscribir> <sigAbreParent> <litString> <sigCierraParent> <endLine>
+funcEscribirId      ::= <reservEscribir> <sigAbreParent> <identificador> <sigCierraParent> <endLine>
+funcEscribir        ::= <funcEscribirInt> | <funcEscribirFloat> | <funcEscribirString> | <funcEscribirId>
+
+operacionBool       ::= (<litBool> | <identificador>) (<signoIgual> | <signoDiferente>) (<litBool> | <identificador>)
+
+operandosRelaInt    ::= <valoresInt> | <operacionInt> | <operaUnaria>
+operandosRelaInt    ::= <sigAbreParent> <operandosRelaInt> <sigCierraParent>
+operacionRelaInt    ::= <operacionBool> | <operandosRelaInt> <operadoresRela> <operandosRelaInt>
+operacionRelaInt    ::= <sigAbreParent> <operacionRelaInt> <sigCierraParent>
+
+operandosRelaFloat  ::= <valoresFloat> | <operacionFloat> | <operaUnaria>
+operandosRelaFloat  ::= <sigAbreParent> <operandosRelaFloat> <sigCierraParent>
+operacionRelaFloat  ::= <operacionBool> | <operandosRelaFloat> <operadoresRela> <operandosRelaFloat>
+operacionRelaFloat  ::= <sigAbreParent> <operacionRelaFloat> <sigCierraParent>
+
+operandosLogicos    ::= <operacionRelaInt> | <operacionRelaFloat> | <litBool> | <identificador> | <operacionLogicas>
+operacionLogicas    ::= <operandosLogicos> <operadoresLogicos> <operandosLogicos> 
+operacionLogicas    ::= <signoNegacion> <operandosLogicos>
+operacionLogicas    ::= <sigAbreParent> <operacionLogicas> <sigCierraParent>
+
+condiciones         ::= <sigAbreParent> <operacionLogicas> <sigCierraParent>
+
+sentencia           ::= <variables> | <funcLeer> | <funcEscribir> | 
+estructControl      ::= <estructIf> | <estructSwitch> | <estructForRange> | <estructWhile>
+valoresBloqueCodigo ::= <sentencia> | <estructControl> | <sentBreak> | <sentReturn> | <sentLlamarFunc>
+bloqueCodigo        ::= <valoresBloqueCodigo>*
+
+estructElse         ::= <reservElse> <sigAbreLlaves> <bloqueCodigo> <sigCierraLlaves>
+estructIf           ::= <reservIf> <condiciones> <sigAbreLlaves> <bloqueCodigo> <sigCierraLlaves> <estructElse>?
+
+paramForRangeUno    ::= <litInt>
+paramForRangeDos    ::= <litInt> <endLine> <litInt>
+paramForRangeTres   ::= <litInt> <endLine> <litInt> <endLine> <litInt>
+paramForRange       ::= <sigAbreParent> (<paramForRangeUno> | <paramForRangeDos> | <paramForRangeTres>) <sigCierraParent>
+estructForRange     ::= <reservForRange> <paramForRange> <sigAbreLlaves> <bloqueCodigo> <sigCierraLlaves>
+
+estructWhile        ::= <reservWhile> <condiciones> <sigAbreLlaves> <bloqueCodigo> <sigCierraLlaves> <estructElse>
+
+literal             ::= <litInt> | <litFloat> | <litChar> | <litString>
+case                ::= <reservCase> <separador> <literal> <dosPuntos> <bloqueCodigo> <sentBreak>
+default             ::= <reservDefault> <dosPuntos> <bloqueCodigo> <sentBreak>
+estructSwitch       ::= <reservSwitch> <sigAbreParent> <identificador> <sigCierraParent> <sigAbreLlaves> (<case>)+ <default> <sigCierraLlaves>
+
+tiposRetornoFunc    ::= <tipoInt> | <tipoFloat> | <tipoBool>
+tiposParam          ::= <tiposRetornoFunc> | <tipoChar>
+paramFunciones      ::= <sigAbreParent> (<tiposParam> <identificador>(<coma> <tiposParam> <identificador>)*)? <sigCierraParent>
+funcMain            ::= <tipoInt> <reservMain> <paramFunciones> <sigAbreLlaves> <bloqueCodigo> <sigCierraLlaves>
+
+creaFunc            ::= <tiposRetornoFunc> <identificador> <paramFunciones> <sigAbreLlaves> <bloqueCodigo> <sigCierraLlaves>
+
+paramLlamarFunc     ::= <litInt> | <litFloat> | <litChar> | <litBool> | <identificador>
+llamarFunc          ::= <identificador> <sigAbreParent>(<paramLlamarFunc>(<coma> <paramLlamarFunc>)*)? <sigCierraParent> 
+sentLlamarFunc      ::= <llamarFunc> <endLine>
+
+globalVar           ::= <creaVarInt> | <creaAsigVarInt> | <creaVarFloat> | <creaAsigVarFloat> | <creaVarBool> | <creaAsigVarBool> | <creaVarChar> | <creaAsigVarChar> | <creaVarString> | <creaAsigVarString>
+valoresPrograma     ::= <creaFunc> | <globalVar> | <comentarios>
+programa            ::= <valoresPrograma>* <funcMain> <valoresPrograma>*
+
+inicio              ::= <programa>
